@@ -27,10 +27,19 @@ const getActivitiesByDay = (date: Date): Activity[] =>{
             activitiesOnDay.push(activity)
         }
     }
-    return activitiesOnDay
+    return activitiesOnDay;
 };
 
+const getActivitiesByCategory = (category: "food" | "transport" | "sightseeing"): Activity[] =>{
+    const filteredActivities: Activity[] =  []
+    for (const activity of activities){
+        if (activity.category === category ){
+            filteredActivities.push(activity)
+        }
+    }
+    return filteredActivities;
+};
 //addActivity();
 //getActivitiesByDay();
-//getActivitiesByCategory();
+//getActivitiesByCategory(); *
 //getAllCategoriesChronologically
