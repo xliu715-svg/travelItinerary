@@ -1,5 +1,6 @@
 import { Activity } from "../models";
 import { randomUUID } from "crypto";
+import { compareAsc } from "date-fns";
 
 let activities: Activity[] = [];
 
@@ -39,7 +40,9 @@ const getActivitiesByCategory = (category: "food" | "transport" | "sightseeing")
     }
     return filteredActivities;
 };
+
+
 //addActivity();
 //getActivitiesByDay();
-//getActivitiesByCategory(); *
-//getAllCategoriesChronologically
+//getActivitiesByCategory();
+//getAllCategoriesChronologically *
