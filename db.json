@@ -1,0 +1,74 @@
+{
+  "trips": [
+    {
+      "id": "trip_001",
+      "destination": "Thailand",
+      "startDate": "2026-07-01T00:00:00.000Z",
+      "activities": [
+        {
+          "id": "act_001",
+          "name": "Visit Grand Palace",
+          "cost": 15,
+          "category": "sightseeing",
+          "startTime": "2026-07-01T09:00:00.000Z"
+        },
+        {
+          "id": "act_002",
+          "name": "Tuk-tuk ride to Wat Pho",
+          "cost": 5,
+          "category": "transport",
+          "startTime": "2026-07-01T11:30:00.000Z"
+        },
+        {
+          "id": "act_003",
+          "name": "Lunch - Pad Thai street food",
+          "cost": 8,
+          "category": "food",
+          "startTime": "2026-07-01T13:30:00.000Z"
+        },
+        {
+          "id": "act_004",
+          "name": "Explore Wat Arun temple",
+          "cost": 10,
+          "category": "sightseeing",
+          "startTime": "2026-07-01T15:30:00.000Z"
+        },
+        {
+          "id": "act_005",
+          "name": "Dinner at riverside restaurant",
+          "cost": 35,
+          "category": "food",
+          "startTime": "2026-07-01T19:00:00.000Z"
+        },
+        {
+          "id": "act_006",
+          "name": "Taxi back to hotel",
+          "cost": 7,
+          "category": "transport",
+          "startTime": "2026-07-01T23:30:00.000Z"
+        },
+        {
+          "id": "act_007",
+          "name": "Thai cooking class",
+          "cost": 50,
+          "category": "sightseeing",
+          "startTime": "2026-07-02T09:00:00.000Z"
+        },
+        {
+          "id": "act_008",
+          "name": "BTS Skytrain to Chatuchak Market",
+          "cost": 2,
+          "category": "transport",
+          "startTime": "2026-07-02T14:00:00.000Z"
+        },
+        {
+          "id": "act_009",
+          "name": "Mango sticky rice dessert",
+          "cost": 6,
+          "category": "food",
+          "startTime": "2026-07-02T17:00:00.000Z"
+        }
+      ]
+    }
+  ]
+}
