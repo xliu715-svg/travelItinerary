@@ -41,7 +41,19 @@ const getActivitiesByCategory = (category: "food" | "transport" | "sightseeing")
     return filteredActivities;
 };
 
-
+const getActivitiesChronologically = () =>{
+    const activitiesChronologically: Activity[] =  []
+    const dateOne = new Date("2026-05-05T10:45:00")
+    const dateTwo = new Date("2026-05-01T10:45:00")
+    const difference = dateOne.getTime() - dateTwo.getTime();
+    console.log(dateOne.getTime());
+    for (const activity of activities){
+        if (activity.startTime === Date ){
+            activitiesChronologically.push(activity)
+        }
+    }
+    return activitiesChronologically;
+};
 //addActivity();
 //getActivitiesByDay();
 //getActivitiesByCategory();
