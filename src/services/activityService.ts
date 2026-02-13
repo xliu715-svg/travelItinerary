@@ -5,7 +5,8 @@ import dbData from "../../db.json";
 
 let activities: Activity[] = dbData.trips[0].activities.map(activity => ({
     ...activity,
-    startTime: new Date(activity.startTime)
+    startTime: new Date(activity.startTime),
+    category: activity.category as "food" | "transport" | "sightseeing"
 }));
 
 const addActivity = (
@@ -53,8 +54,10 @@ const getActivitiesChronologically = (): Activity[] =>{
     });
 };
 
-addActivity("Museum", 150, "sightseeing", new Date("2026-02-15T22:00"))
-console.log(getActivitiesChronologically());
+// console.log(getActivitiesChronologically());
+// addActivity("Testing", 500, "food", new Date("2026-06-30"));
+// console.log(getActivitiesByDay( new Date("2026-06-30")));
+console.log(getActivitiesByCategory("transport"));
 
 
 
