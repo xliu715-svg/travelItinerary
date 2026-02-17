@@ -8,10 +8,8 @@ export const getDestinationInfo = async (countryName: string) => {
       currency: Object.keys(data[0].currencies)[0],
       flag: data[0].flag,
     };
-    console.log(result);
+    return result;
   } catch (error) {
     throw new Error("Could not fetch country data");
   }
 };
-
-getDestinationInfo("United Kingdom");
