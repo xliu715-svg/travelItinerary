@@ -5,6 +5,7 @@ import {
   getActivitiesByDay,
   addActivity,
 } from "./services/activityService";
+import { getTripTotalCost, findHighCostItem } from "./services/budgetManager";
 
 // shows all activities sorted by time
 const handleViewActivities = () => {
@@ -120,6 +121,33 @@ const handleAddActivity = async () => {
   console.log(`\nActivity "${answers.name}" added!`);
 };
 
+// gets the total cost of the trip from the budget service
+const handleTripCost = async () => {
+  const total = await getTripTotalCost("trip_001");
+  console.log(`\nTrip total cost: $${total}`);
+};
+
+// asks user for a cost threshold and shows activities above it
+const handleHighCost = async () => {
+  const { threshold } = await inquirer.prompt([
+    {
+      type: "number",
+      name: "threshold",
+      message: "Enter cost threshold ($):",
+    },
+  ]);
+  const items = await findHighCostItem("trip_001", threshold);
+  if (items.length === 0) {
+    console.log(`\nNo activities found above $${threshold}.`);
+  } else {
+    console.log(`\n=== High Cost Activities (>= $${threshold}) ===`);
+    console.log(`Found ${items.length} activities:\n`);
+    items.forEach((a) => {
+      console.log(`- ${a.name}: $${a.cost} (${a.category})`);
+    });
+  }
+};
+
 // main function that runs the menu loop
 const main = async () => {
   let running = true;
@@ -138,6 +166,9 @@ const main = async () => {
           { name: "View activities (chronological)", value: "view" },
           { name: "Filter activities", value: "filter" },
           { name: "Add a new activity", value: "add" },
+          new inquirer.Separator("--- Budget ---"),
+          { name: "View trip total cost", value: "cost" },
+          { name: "Find high-cost activities", value: "highcost" },
           new inquirer.Separator(),
           { name: "Exit", value: "exit" },
         ],
@@ -154,6 +185,12 @@ const main = async () => {
         break;
       case "add":
         await handleAddActivity();
+        break;
+      case "cost":
+        await handleTripCost();
+        break;
+      case "highcost":
+        await handleHighCost();
         break;
       case "exit":
         console.log("\nGoodbye!");
