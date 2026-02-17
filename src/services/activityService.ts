@@ -1,6 +1,7 @@
 import { Activity } from "../models";
 import { randomUUID } from "crypto";
 import { compareAsc } from "date-fns";
+import fs from "fs/promises";
 import dbData from "../../db.json";
 
 let activities: Activity[] = dbData.trips[0].activities.map(activity => ({
@@ -9,12 +10,12 @@ let activities: Activity[] = dbData.trips[0].activities.map(activity => ({
     category: activity.category as "food" | "transport" | "sightseeing"
 }));
 
-export const addActivity = (
-    name: string, 
-    cost: number, 
-    category: "food" | "transport" | "sightseeing", 
-    startTime: Date 
-): void => {
+export const addActivity = async (
+    name: string,
+    cost: number,
+    category: "food" | "transport" | "sightseeing",
+    startTime: Date
+): Promise<void> => {
 
     const newActivity: Activity = {
         id: randomUUID(),
@@ -24,6 +25,13 @@ export const addActivity = (
         startTime: startTime,
     }
     activities.push(newActivity)
+
+    // update db.json so the new activity persists
+    dbData.trips[0].activities = activities.map(a => ({
+        ...a,
+        startTime: a.startTime.toISOString(),
+    }));
+    await fs.writeFile("./db.json", JSON.stringify(dbData, null, 2));
 };
 
 

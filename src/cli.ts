@@ -113,7 +113,7 @@ const handleAddActivity = async () => {
     },
   ]);
 
-  addActivity(
+  await addActivity(
     answers.name,
     answers.cost,
     answers.category,
