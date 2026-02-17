@@ -7,18 +7,24 @@ import {
 } from "./services/activityService";
 import { getTripTotalCost, findHighCostItem } from "./services/budgetManager";
 import { getDestinationInfo } from "./services/destinationService";
-import { addTrip } from "./services/tripService";
+import { addTrip, getTrips } from "./services/tripService";
+
+let currentTripId: string | null = null;
 
 // shows all activities sorted by time
-const handleViewActivities = () => {
-  const activities = getActivitiesChronologically();
+const handleViewActivities = async () => {
+  if (!currentTripId) {
+    console.log("\nNo trip selected. Select a trip first!");
+    return;
+  }
+  const activities = await getActivitiesChronologically(currentTripId);
   if (activities.length === 0) {
     console.log("\nNo activities found.");
   } else {
     console.log("\n--- Activities (Chronological) ---");
     activities.forEach((a) => {
       console.log(
-        `- ${a.name} | $${a.cost} | ${a.category} | ${a.startTime.toLocaleString()}`
+        `- ${a.name} | $${a.cost} | ${a.category} | ${a.startTime.toLocaleString()}`,
       );
     });
   }
@@ -26,6 +32,11 @@ const handleViewActivities = () => {
 
 // lets the user pick a filter type and shows matching activities
 const handleFilterActivities = async () => {
+  if (!currentTripId) {
+    console.log("\nNo trip selected. Select a trip first!");
+    return;
+  }
+
   const { filterType } = await inquirer.prompt([
     {
       type: "list",
@@ -51,14 +62,14 @@ const handleFilterActivities = async () => {
         choices: ["food", "transport", "sightseeing"],
       },
     ]);
-    const activities = getActivitiesByCategory(category);
+    const activities = await getActivitiesByCategory(currentTripId, category);
     if (activities.length === 0) {
       console.log(`\nNo ${category} activities found.`);
     } else {
       console.log(`\n--- ${category} Activities ---`);
       activities.forEach((a) => {
         console.log(
-          `- ${a.name} | $${a.cost} | ${a.startTime.toLocaleString()}`
+          `- ${a.name} | $${a.cost} | ${a.startTime.toLocaleString()}`,
         );
       });
     }
@@ -74,14 +85,16 @@ const handleFilterActivities = async () => {
 
     if (date.toLowerCase() === "back") return;
 
-    const activities = getActivitiesByDay(new Date(date));
+    const activities = await getActivitiesByDay(currentTripId, new Date(date));
     if (activities.length === 0) {
-      console.log(`\nNo activities found for ${date}. Check the date and try again.`);
+      console.log(
+        `\nNo activities found for ${date}. Check the date and try again.`,
+      );
     } else {
       console.log(`\n--- Activities on ${date} ---`);
       activities.forEach((a) => {
         console.log(
-          `- ${a.name} | $${a.cost} | ${a.category} | ${a.startTime.toLocaleString()}`
+          `- ${a.name} | $${a.cost} | ${a.category} | ${a.startTime.toLocaleString()}`,
         );
       });
     }
@@ -90,6 +103,11 @@ const handleFilterActivities = async () => {
 
 // prompts for activity details and adds it to the list
 const handleAddActivity = async () => {
+  if (!currentTripId) {
+    console.log("\nNo trip selected. Select a trip first!");
+    return;
+  }
+
   const answers = await inquirer.prompt([
     {
       type: "input",
@@ -114,11 +132,12 @@ const handleAddActivity = async () => {
     },
   ]);
 
-  addActivity(
+  await addActivity(
+    currentTripId,
     answers.name,
     answers.cost,
     answers.category,
-    new Date(answers.startTime)
+    new Date(answers.startTime),
   );
   console.log(`\nActivity "${answers.name}" added!`);
 };
@@ -138,13 +157,46 @@ const handleCreateTrip = async () => {
     },
   ]);
 
-  const tripId = await addTrip(answers.destination, new Date(answers.startDate));
+  const tripId = await addTrip(
+    answers.destination,
+    new Date(answers.startDate),
+  );
   console.log(`\nTrip to "${answers.destination}" created! (${tripId})`);
+};
+
+// shows all trips and lets the user pick one to work with
+const handleSelectTrip = async () => {
+  const trips = await getTrips();
+
+  if (trips.length === 0) {
+    console.log("\nNo trips found. Create one first!");
+    return;
+  }
+
+  const { tripId } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "tripId",
+      message: "Select a trip:",
+      loop: false,
+      choices: trips.map((t) => ({
+        name: `${t.destination} (${t.id})`,
+        value: t.id,
+      })),
+    },
+  ]);
+
+  currentTripId = tripId;
+  console.log(`\nNow working with trip: ${tripId}`);
 };
 
 // gets the total cost of the trip from the budget service
 const handleTripCost = async () => {
-  const total = await getTripTotalCost("trip_001");
+  if (!currentTripId) {
+    console.log("\nNo trip selected. Select a trip first!");
+    return;
+  }
+  const total = await getTripTotalCost(currentTripId);
   console.log(`\nTrip total cost: $${total}`);
 };
 
@@ -157,7 +209,11 @@ const handleHighCost = async () => {
       message: "Enter cost threshold ($):",
     },
   ]);
-  const items = await findHighCostItem("trip_001", threshold);
+  if (!currentTripId) {
+    console.log("\nNo trip selected. Select a trip first!");
+    return;
+  }
+  const items = await findHighCostItem(currentTripId, threshold);
   if (items.length === 0) {
     console.log(`\nNo activities found above $${threshold}.`);
   } else {
@@ -187,7 +243,9 @@ const handleDestinationInfo = async () => {
     console.log(`Currency: ${info.currency}`);
     console.log(`Flag: ${info.flag}`);
   } catch {
-    console.log("\nCould not fetch destination info. Check the country name and try again.");
+    console.log(
+      "\nCould not fetch destination info. Check the country name and try again.",
+    );
   }
 };
 
@@ -207,6 +265,7 @@ const main = async () => {
         loop: false,
         choices: [
           { name: "Create a new trip", value: "createtrip" },
+          { name: "Select a trip", value: "selecttrip" },
           new inquirer.Separator("--- Activities ---"),
           { name: "View activities (chronological)", value: "view" },
           { name: "Filter activities", value: "filter" },
@@ -227,8 +286,11 @@ const main = async () => {
       case "createtrip":
         await handleCreateTrip();
         break;
+      case "selecttrip":
+        await handleSelectTrip();
+        break;
       case "view":
-        handleViewActivities();
+        await handleViewActivities();
         break;
       case "filter":
         await handleFilterActivities();
@@ -236,11 +298,11 @@ const main = async () => {
       case "add":
         await handleAddActivity();
         break;
-      case "cost":
-        await handleTripCost();
-        break;
       case "highcost":
         await handleHighCost();
+        break;
+      case "cost":
+        await handleTripCost();
         break;
       case "destination":
         await handleDestinationInfo();

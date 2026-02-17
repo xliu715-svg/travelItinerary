@@ -24,3 +24,8 @@ export const addTrip = async (
 
     return tripId;
 };
+
+export const getTrips = async (): Promise<Trip[]> => {
+    const db = await readDataBase();
+    return db.trips;
+};
