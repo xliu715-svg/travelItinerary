@@ -3,35 +3,35 @@ import { Trip } from "../models";
 import { readDataBase } from "./budgetManager";
 
 export const addTrip = async (
-    destination: string,
-    startDate: Date
+  destination: string,
+  startDate: Date,
 ): Promise<string> => {
-    const db = await readDataBase();
+  const db = await readDataBase();
 
-    // generate the next trip id based on how many trips exist
-    const nextNumber = db.trips.length + 1;
-    const tripId = `trip_${String(nextNumber).padStart(3, "0")}`;
+  // Generate the next trip id based on how many trips exist
+  const nextNumber = db.trips.length + 1;
+  const tripId = `trip_${String(nextNumber).padStart(3, "0")}`;
 
-    const newTrip: Trip = {
-        id: tripId,
-        destination: destination,
-        startDate: startDate,
-        activities: [],
-    };
+  const newTrip: Trip = {
+    id: tripId,
+    destination: destination,
+    startDate: startDate,
+    activities: [],
+  };
 
-    db.trips.push(newTrip);
-    await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  db.trips.push(newTrip);
+  await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
 
-    return tripId;
+  return tripId;
 };
 
 export const deleteTrip = async (tripId: string): Promise<void> => {
-    const db = await readDataBase();
-    db.trips = db.trips.filter(t => t.id !== tripId);
-    await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  const db = await readDataBase();
+  db.trips = db.trips.filter((t) => t.id !== tripId);
+  await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
 };
 
 export const getTrips = async (): Promise<Trip[]> => {
-    const db = await readDataBase();
-    return db.trips;
+  const db = await readDataBase();
+  return db.trips;
 };

@@ -12,7 +12,7 @@ import { addTrip, deleteTrip, getTrips } from "./services/tripService";
 
 let currentTripId: string | null = null;
 
-// shows all activities sorted by time
+// Shows all activities sorted by time
 const handleViewActivities = async () => {
   if (!currentTripId) {
     console.log("\nNo trip selected. Select a trip first!");
@@ -31,7 +31,7 @@ const handleViewActivities = async () => {
   }
 };
 
-// lets the user pick a filter type and shows matching activities
+// Lets the user pick a filter type and shows matching activities
 const handleFilterActivities = async () => {
   if (!currentTripId) {
     console.log("\nNo trip selected. Select a trip first!");
@@ -54,7 +54,7 @@ const handleFilterActivities = async () => {
   ]);
 
   if (filterType === "category") {
-    // let user pick which category to filter by
+    // Let user pick which category to filter by
     const { category } = await inquirer.prompt([
       {
         type: "list",
@@ -75,7 +75,7 @@ const handleFilterActivities = async () => {
       });
     }
   } else if (filterType === "day") {
-    // ask user for a date, or type "back" to return
+    // Ask user for a date, or type "back" to return
     const { date } = await inquirer.prompt([
       {
         type: "input",
@@ -102,7 +102,7 @@ const handleFilterActivities = async () => {
   }
 };
 
-// prompts for activity details and adds it to the list
+// Prompts for activity details and adds it to the list
 const handleAddActivity = async () => {
   if (!currentTripId) {
     console.log("\nNo trip selected. Select a trip first!");
@@ -143,7 +143,7 @@ const handleAddActivity = async () => {
   console.log(`\nActivity "${answers.name}" added!`);
 };
 
-// shows activities in the current trip and lets the user pick one to delete
+// Shows activities in the current trip and lets the user pick one to delete
 const handleDeleteActivity = async () => {
   if (!currentTripId) {
     console.log("\nNo trip selected. Select a trip first!");
@@ -179,7 +179,7 @@ const handleDeleteActivity = async () => {
   console.log("\nActivity deleted!");
 };
 
-// prompts for trip details and creates a new trip
+// Prompts for trip details and creates a new trip
 const handleCreateTrip = async () => {
   const answers = await inquirer.prompt([
     {
@@ -201,7 +201,7 @@ const handleCreateTrip = async () => {
   console.log(`\nTrip to "${answers.destination}" created! (${tripId})`);
 };
 
-// shows all trips and lets the user pick one to work with
+// Shows all trips and lets the user pick one to work with
 const handleSelectTrip = async () => {
   const trips = await getTrips();
 
@@ -227,7 +227,7 @@ const handleSelectTrip = async () => {
   console.log(`\nNow working with trip: ${tripId}`);
 };
 
-// shows all trips and lets the user pick one to delete
+// Shows all trips and lets the user pick one to delete
 const handleDeleteTrip = async () => {
   const trips = await getTrips();
 
@@ -257,7 +257,7 @@ const handleDeleteTrip = async () => {
 
   await deleteTrip(tripId);
 
-  // if we deleted the trip we were working with, clear the selection
+  // If we deleted the trip we were working with, clear the selection
   if (currentTripId === tripId) {
     currentTripId = null;
   }
@@ -265,7 +265,7 @@ const handleDeleteTrip = async () => {
   console.log(`\nTrip ${tripId} deleted!`);
 };
 
-// shows all trips
+// Shows all trips
 const handleViewTrips = async () => {
   const trips = await getTrips();
 
@@ -276,11 +276,13 @@ const handleViewTrips = async () => {
 
   console.log("\n--- Your Trips ---");
   trips.forEach((t) => {
-    console.log(`- ${t.destination} (${t.id}) | ${t.activities.length} activities`);
+    console.log(
+      `- ${t.destination} (${t.id}) | ${t.activities.length} activities`,
+    );
   });
 };
 
-// gets the total cost of the trip from the budget service
+// Gets the total cost of the trip from the budget service
 const handleTripCost = async () => {
   if (!currentTripId) {
     console.log("\nNo trip selected. Select a trip first!");
@@ -290,7 +292,7 @@ const handleTripCost = async () => {
   console.log(`\nTrip total cost: $${total}`);
 };
 
-// asks user for a cost threshold and shows activities above it
+// Asks user for a cost threshold and shows activities above it
 const handleHighCost = async () => {
   const { threshold } = await inquirer.prompt([
     {
@@ -315,7 +317,7 @@ const handleHighCost = async () => {
   }
 };
 
-// asks for a country name and fetches info from the API
+// Asks for a country name and fetches info from the API
 const handleDestinationInfo = async () => {
   const { country } = await inquirer.prompt([
     {
@@ -339,14 +341,14 @@ const handleDestinationInfo = async () => {
   }
 };
 
-// main function that runs the menu loop
+// Main function that runs the menu loop
 const main = async () => {
   let running = true;
 
   while (running) {
     console.log("\n=== Travel Itinerary Manager ===");
 
-    // show the main menu and wait for user to pick an option
+    // Show the main menu and wait for user to pick an option
     const { choice } = await inquirer.prompt([
       {
         type: "list",
@@ -374,7 +376,7 @@ const main = async () => {
       },
     ]);
 
-    // each case calls its own handler function to keep things clean
+    // Each case calls its own handler function to keep things clean
     switch (choice) {
       case "createtrip":
         await handleCreateTrip();

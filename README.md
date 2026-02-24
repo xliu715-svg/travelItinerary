@@ -6,18 +6,21 @@ A command-line application for managing travel activities and budgets. Built wit
 
 ```bash
 npm install
+npm i inquirer
 npm start
 ```
 
 ## Features
 
 ### Trip Management
+
 - Create new trips with a destination and start date
 - View all trips with activity count
 - Select a trip to work with
 - Delete a trip
 
 ### Activity Management
+
 - View all activities sorted chronologically
 - Filter activities by category (food, transport, sightseeing)
 - Filter activities by specific day
@@ -25,10 +28,12 @@ npm start
 - Delete an activity
 
 ### Budget Tracking
+
 - View the total cost of a trip
 - Find activities above a cost threshold
 
 ### Destination Info
+
 - Look up any country's currency and flag using the REST Countries API
 
 ## Project Structure

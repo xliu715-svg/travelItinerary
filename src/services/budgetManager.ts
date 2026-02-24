@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import { Trip } from "../models";
 import { Activity } from "../models";
 
-//read data from the DB.json file
+// Read data from the DB.json file
 export const readDataBase = async (): Promise<{ trips: Trip[] }> => {
   try {
     const response = await fs.readFile("./db.json", "utf-8");
@@ -14,12 +14,12 @@ export const readDataBase = async (): Promise<{ trips: Trip[] }> => {
   }
 };
 
-//make the calculate total cost function
+// Make the calculate total cost function
 export const calculateTotalCost = (trip: Trip): number => {
   return trip.activities.reduce((sum, activity) => sum + activity.cost, 0);
 };
 
-//get total cost
+// Get total cost
 export const getTripTotalCost = async (tripId: string): Promise<number> => {
   try {
     const db = await readDataBase();
@@ -36,14 +36,7 @@ export const getTripTotalCost = async (tripId: string): Promise<number> => {
   }
 };
 
-//test
-// const test = async () => {
-//   const total = await getTripTotalCost("trip_001");
-//   console.log(`Total cost: ${total}`);
-// };
-// test();
-
-//find high cost activity item
+// Find high cost activity item
 export const findHighCostItem = async (
   tripId: string,
   threshold: number,
@@ -83,11 +76,3 @@ export const highCost = async (tripId: string, threshold: number) => {
     });
   } catch (error) {}
 };
-
-//Test
-// const testHighCost = async () => {
-//   const expensive = await highCost("trip_001", 30);
-//   return expensive;
-// };
-
-// testHighCost().then((result) => console.log(result));
