@@ -20,7 +20,11 @@ export const addTrip = async (
   };
 
   db.trips.push(newTrip);
-  await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  try {
+    await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  } catch (error) {
+    throw new Error(`Failed to save trip: ${(error as Error).message}`);
+  }
 
   return tripId;
 };
@@ -28,7 +32,11 @@ export const addTrip = async (
 export const deleteTrip = async (tripId: string): Promise<void> => {
   const db = await readDataBase();
   db.trips = db.trips.filter((t) => t.id !== tripId);
-  await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  try {
+    await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  } catch (error) {
+    throw new Error(`Failed to delete trip: ${(error as Error).message}`);
+  }
 };
 
 export const getTrips = async (): Promise<Trip[]> => {

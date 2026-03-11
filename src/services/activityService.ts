@@ -43,7 +43,11 @@ export const addActivity = async (
   }
 
   trip.activities.push(newActivity);
-  await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  try {
+    await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  } catch (error) {
+    throw new Error(`Failed to save activity: ${(error as Error).message}`);
+  }
 };
 
 export const deleteActivity = async (
@@ -58,7 +62,11 @@ export const deleteActivity = async (
   }
 
   trip.activities = trip.activities.filter((a) => a.id !== activityId);
-  await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  try {
+    await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+  } catch (error) {
+    throw new Error(`Failed to delete activity: ${(error as Error).message}`);
+  }
 };
 
 export const getActivitiesByDay = async (
