@@ -9,8 +9,7 @@ export const readDataBase = async (): Promise<{ trips: Trip[] }> => {
     const data = JSON.parse(response) as { trips: Trip[] };
     return data;
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error(`Failed to read database: ${(error as Error).message}`);
   }
 };
 
@@ -21,61 +20,27 @@ export const calculateTotalCost = (trip: Trip): number => {
 
 // Get total cost
 export const getTripTotalCost = async (tripId: string): Promise<number> => {
-  try {
-    const db = await readDataBase();
-    const trip = db.trips.find((t) => t.id === tripId);
+  const db = await readDataBase();
+  const trip = db.trips.find((t) => t.id === tripId);
 
-    if (!trip) {
-      throw new Error("Trip not found!");
-    }
-
-    return calculateTotalCost(trip);
-  } catch (error) {
-    console.error(error);
-    throw error;
+  if (!trip) {
+    throw new Error("Trip not found!");
   }
+
+  return calculateTotalCost(trip);
 };
 
 // Find high cost activity item
-
 export const findHighCostItem = async (
   tripId: string,
   threshold: number,
 ): Promise<Activity[]> => {
-  try {
-    const db = await readDataBase();
-    const trip = db.trips.find((t) => t.id === tripId);
+  const db = await readDataBase();
+  const trip = db.trips.find((t) => t.id === tripId);
 
-    if (!trip) {
-      throw new Error("Trip not found!");
-    }
-
-    const highCostItem = trip.activities.filter(
-      (activity) => activity.cost >= threshold,
-    );
-
-    return highCostItem;
-  } catch (error) {
-    console.error(error);
-    throw error;
+  if (!trip) {
+    throw new Error("Trip not found!");
   }
-};
 
-// Presentation to the users in a friendly way
-
-export const highCost = async (tripId: string, threshold: number) => {
-  try {
-    const expensive = await findHighCostItem(tripId, threshold);
-
-    console.log(`\n=== High Cost Activities (=> $${threshold}) ===`);
-    console.log(`Found ${expensive.length} expensive activities:\n`);
-
-    expensive.forEach((activity) => {
-      console.log(
-        `- ${activity.name}: $${activity.cost} (${activity.category})`,
-      );
-    });
-  } catch (error) {
-    console.error(error);
-  }
+  return trip.activities.filter((activity) => activity.cost >= threshold);
 };

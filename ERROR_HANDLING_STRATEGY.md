@@ -63,7 +63,7 @@ if (!Array.isArray(data) || data.length === 0) {
 
 ### Phase 2 — `src/utils/validators.ts` (NEW FILE)
 
-**Status: [ ] Not started**
+**Status: [x] Done**
 
 Pure, synchronous, zero-dependency helpers using date-fns (already installed).
 
@@ -81,7 +81,7 @@ Note: Pair date-fns `parseISO` with a regex to enforce strict format — `parseI
 
 ### Phase 3 — `src/services/budgetManager.ts`
 
-**Status: [ ] Not started**
+**Status: [x] Done**
 
 Changes:
 
