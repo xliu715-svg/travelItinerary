@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+import { parseISO } from "date-fns";
 import {
   getActivitiesChronologically,
   getActivitiesByCategory,
@@ -9,6 +10,7 @@ import {
 import { getTripTotalCost, findHighCostItem } from "./services/budgetManager";
 import { getDestinationInfo } from "./services/destinationService";
 import { addTrip, deleteTrip, getTrips } from "./services/tripService";
+import { isValidDateString, isNonEmptyString } from "./utils/validators";
 
 let currentTripId: string | null = null;
 
@@ -195,14 +197,34 @@ const handleCreateTrip = async () => {
     {
       type: "input",
       name: "destination",
-      message: "Destination (country/city):",
+      message: "Destination (country):",
+      validate: (input: string) =>
+        isNonEmptyString(input) || "Destination cannot be empty",
     },
     {
       type: "input",
       name: "startDate",
       message: "Start date (YYYY-MM-DD):",
+      validate: (input: string) =>
+        isValidDateString(input) || "Enter a valid date (YYYY-MM-DD)",
     },
   ]);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (parseISO(answers.startDate) < today) {
+    console.log("\nStart date cannot be in the past.");
+    return;
+  }
+
+  console.log("\nValidating destination...");
+  try {
+    await getDestinationInfo(answers.destination);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.log(`\n${message}`);
+    return;
+  }
 
   const tripId = await addTrip(
     answers.destination,
